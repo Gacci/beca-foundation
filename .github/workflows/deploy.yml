@@ -52,7 +52,7 @@ jobs:
         run: |
           # Find the correct docs directory
           if [ -d "docs/browser" ]; then
-            DIST_DIR="docs/broser"
+            DIST_DIR="docs/browser"
           elif [ -d "docs" ]; then
             DIST_DIR="docs"
           else
@@ -60,6 +60,7 @@ jobs:
             ls -la docs/
             exit 1
           fi
+          
           
           echo "Deploying from directory: $DIST_DIR"
           aws s3 sync $DIST_DIR s3://${{ secrets.S3_BUCKET }}/ --delete --exact-timestamps
