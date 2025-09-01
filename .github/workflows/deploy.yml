@@ -28,7 +28,7 @@ jobs:
         
       # 4️⃣ Build Angular app
       - name: Build Angular
-        run: npm run build -- --configuration production
+        run: npm run build
         
       # 5️⃣ Configure AWS credentials
       - name: Configure AWS Credentials
@@ -52,12 +52,12 @@ jobs:
         run: |
           # Find the correct dist directory
           if [ -d "dist" ]; then
-            DIST_DIR="dist"
+            DIST_DIR="docs"
           elif [ -d "dist/your-app-name" ]; then
-            DIST_DIR="dist/your-app-name"
+            DIST_DIR="docs/browser"
           else
             echo "Error: Could not find dist directory"
-            ls -la dist/
+            ls -la docs/
             exit 1
           fi
           
