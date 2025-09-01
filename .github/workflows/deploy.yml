@@ -9,56 +9,64 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       # 1️⃣ Checkout the repository
       - name: Checkout Repository
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
+        
       # 2️⃣ Setup Node.js
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-
+          cache: 'npm'
+          
       # 3️⃣ Install dependencies
       - name: Install Dependencies
         run: npm ci
-
+        
       # 4️⃣ Build Angular app
       - name: Build Angular
         run: npm run build -- --configuration production
-
-      # 5️⃣ Test AWS secrets (safe step)
-      - name: Test AWS Secrets
+        
+      # 5️⃣ Configure AWS credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      # 6️⃣ Test AWS secrets (safe step)
+      - name: Test AWS Configuration
         run: |
-          echo "AWS_BUCKET is set: ${AWS_BUCKET}"
-          echo "AWS_REGION is set: ${AWS_REGION}"
-          echo "CLOUDFRONT_ID is set: ${CLOUDFRONT_ID}"
-        env:
-          AWS_BUCKET: ${{ secrets.S3_BUCKET }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          CLOUDFRONT_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-
-      # 6️⃣ Deploy to S3
+          echo "AWS_BUCKET is set: ${{ secrets.S3_BUCKET != '' }}"
+          echo "AWS_REGION is set: ${{ secrets.AWS_REGION != '' }}"
+          echo "CLOUDFRONT_ID is set: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}"
+          echo "Testing AWS connection..."
+          aws sts get-caller-identity
+          
+      # 7️⃣ Deploy to S3
       - name: Deploy to S3
-        uses: aws-actions/s3-sync@v2
-        with:
-          source_dir: 'dist'  # replace with your Angular dist folder
-          dest_dir: '/'
-          bucket: ${{ secrets.S3_BUCKET }}
-          region: ${{ secrets.AWS_REGION }}
-          delete: true
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      # 7️⃣ Invalidate CloudFront Cache
+        run: |
+          # Find the correct dist directory
+          if [ -d "dist" ]; then
+            DIST_DIR="dist"
+          elif [ -d "dist/your-app-name" ]; then
+            DIST_DIR="dist/your-app-name"
+          else
+            echo "Error: Could not find dist directory"
+            ls -la dist/
+            exit 1
+          fi
+          
+          echo "Deploying from directory: $DIST_DIR"
+          aws s3 sync $DIST_DIR s3://${{ secrets.S3_BUCKET }}/ --delete --exact-timestamps
+          
+      # 8️⃣ Invalidate CloudFront Cache
       - name: Invalidate CloudFront Cache
-        uses: aws-actions/cloudfront-invalidate@v2
-        with:
-          distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-          paths: '/*'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
