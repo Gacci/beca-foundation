@@ -51,10 +51,10 @@ jobs:
       - name: Deploy to S3
         run: |
           # Find the correct docs directory
-          if [ -d "docs" ]; then
+          if [ -d "docs/browser" ]; then
+            DIST_DIR="docs/broser"
+          elif [ -d "docs" ]; then
             DIST_DIR="docs"
-          elif [ -d "docs/beca-foundation-inc" ]; then
-            DIST_DIR="docs/browser"
           else
             echo "Error: Could not find docs directory"
             ls -la docs/
