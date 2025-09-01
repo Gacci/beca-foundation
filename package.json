@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --output-path=docs --base-href=beca-foundation-inc  --configuration production",
+    "build": "ng build --base-href=beca-foundation-inc  --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
