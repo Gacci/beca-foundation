@@ -40,7 +40,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           CLOUDFRONT_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
-      6️⃣ Deploy to S3 (uncomment to activate real deploy)
+      # 6️⃣ Deploy to S3 (uncomment to activate real deploy)
       - name: Deploy to S3
         uses: aws-actions/s3-sync@v1
         with:
@@ -53,7 +53,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      7️⃣ Invalidate CloudFront Cache (uncomment to activate)
+      # 7️⃣ Invalidate CloudFront Cache (uncomment to activate)
       - name: Invalidate CloudFront Cache
         uses: aws-actions/cloudfront-invalidate@v1
         with:
