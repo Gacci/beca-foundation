@@ -1,6 +1,6 @@
 name: Deploy Angular to S3 + CloudFront (Test)
 
-# Trigger on push to master branch (update)
+# Trigger on push to main branch
 on:
   push:
     branches:
@@ -40,9 +40,9 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           CLOUDFRONT_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
-      # 6️⃣ Deploy to S3 (uncomment to activate real deploy)
+      # 6️⃣ Deploy to S3
       - name: Deploy to S3
-        uses: aws-actions/s3-sync@v1
+        uses: aws-actions/s3-sync@v2
         with:
           source_dir: 'dist'  # replace with your Angular dist folder
           dest_dir: '/'
@@ -53,9 +53,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      # 7️⃣ Invalidate CloudFront Cache (uncomment to activate)
+      # 7️⃣ Invalidate CloudFront Cache
       - name: Invalidate CloudFront Cache
-        uses: aws-actions/cloudfront-invalidate@v1
+        uses: aws-actions/cloudfront-invalidate@v2
         with:
           distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           paths: '/*'
