@@ -2,12 +2,15 @@ name: Deploy Angular to S3 + CloudFront (Test)
 
 # Trigger on push to main branch
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types:
+      - closed
 
 jobs:
   build-and-deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     
     steps:
