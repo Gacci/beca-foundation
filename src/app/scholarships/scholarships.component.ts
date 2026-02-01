@@ -79,8 +79,8 @@ export class ScholarshipsComponent implements OnInit {
 
     this.newellScholarshipPeriod.from = new Date(
       this.now.getFullYear() + ((this.now.getMonth() >= 11) && (this.now.getDate() > 1) ? 1 : 0),
-      8,
-      3,
+      0,
+      6,
       0,
       0,
       0,
@@ -88,8 +88,8 @@ export class ScholarshipsComponent implements OnInit {
     );
     this.newellScholarshipPeriod.to = new Date(
       this.now.getFullYear() + ((this.now.getMonth() >= 11) && (this.now.getDate() > 1) ? 1 : 0),
-      11,
-      1,
+      2,
+      30,
       23,
       59,
       59,
