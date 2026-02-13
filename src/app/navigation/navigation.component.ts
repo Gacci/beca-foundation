@@ -27,8 +27,8 @@ import { environment } from '../../environments/environment';
           alt="The Beca Foundation Inc. Logo"
         />
         <span class="hidden font-semibold text-xl tracking-tight lg:block">{{
-          env.siteName
-        }}</span>
+            env.siteName
+          }}</span>
       </a>
       <div class="block lg:hidden z-30">
         <button
@@ -49,7 +49,6 @@ import { environment } from '../../environments/environment';
 
           <span *ngIf="mobileMenuDropdown">
             <span class="sr-only">Close menu</span>
-            <!-- Heroicon name: outline/x-mark -->
             <svg
               class="h-3 w-3"
               xmlns="http://www.w3.org/2000/svg"
@@ -96,6 +95,13 @@ import { environment } from '../../environments/environment';
             routerLinkActive="bg-indigo-500"
           >
             About
+          </a>
+          <a
+            class="block px-4 py-2 rounded-lg lg:inline-block lg:mx-4 text-white"
+            routerLink="/contact"
+            routerLinkActive="bg-indigo-500"
+          >
+            Contact
           </a>
         </div>
         <form
